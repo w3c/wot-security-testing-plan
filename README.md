@@ -1,2 +1,2 @@
-# wot-security-testing-plan
-Repository for the WoT Security Teting Plan document
+# WoT Security Testing Plan
+Repository for the WoT Security Testing Plan document.
