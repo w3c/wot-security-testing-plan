@@ -312,6 +312,13 @@
                   , publisher: "OWASP"
                   , date: "Jan 2017"
                 },
+		"Owa18": {
+                  authors: ["OWASP"]
+                  , href: "https://www.owasp.org/index.php/Web_Service_Security_Testing_Cheat_Sheet"
+                  , title: "Web Service Security Testing"
+                  , publisher: "OWASP"
+                  , date: "Aug 2018"
+                },
                 "Res03": {
                   authors: ["E. Rescorla", "et al."]
                   , href: "https://tools.ietf.org/html/rfc3552"
@@ -397,16 +404,49 @@
             document.</li>
       </ul>
       </p>
+	  <p>{Difference between vulnerability and exploit.}</p>
+	  <p>{Goal of testing is to find vulnerabilities.}</p>
     </section>
 
     <section>
+      <h1>Best Practices</h1>
+      <p>Really want to identify known bad practices, such as basic auth + http, for which a 
+	 vulnerability is known.
+	    It is known from the TD that the system is vulnerable.</p>
+    </section>
+	
+    <section>
       <h1>Functional Security Testing</h1>
-      <p>To do.</p>
+      <p>{Does the Thing do what the TD says it does in terms of security, and only that?
+	  Checks the security portiont of the TD.}</p>
     </section>
 
     <section>
       <h1>Adversarial Security Testing</h1>
-      <p>To do.</p>
+      <p>To do. [[Owa18]]</p>
+	  <h2>Code Analysis</h2>
+	    <h3>Static Analysis</h3>
+	    <p>Example: Klockwork, Verity</p>
+	    <h3>Known NIST CVEs</h3>
+	    <p>Example: ?</p>
+	  <h2>Vulnerability Discovery at the Service Interface</h2>
+	    <h3>Fuzz Testing</h3>
+	    <p>Example: Burp Suite</p>
+	    <h3>Protocol/Header Analysis</h3>
+	    <h3>Catalog of Known Vulnerabilties/Exploits</h3>
+	    <p>Don't know from the TD that it is vulnerable, but a test to see if a vulnerabilty xists.
+	       Example: Metasploit(?), ExploitDB
+	    </p>
+	  <h2>Penetration Testing</h2>
+	    <h3>Privledge Escalation<h3>
+	    <h3>Authorization Bypass<h3>
+            <h3>Denial of Service</h3>
+    </section>
+		    
+    <section>
+	    <h1>Suggested Test Procedure</h1>
+	    <h1>Maintenance</h1>
+	    <p>{recommend regular retesting}</p>
     </section>
 
     <section>
