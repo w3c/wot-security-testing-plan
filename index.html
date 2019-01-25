@@ -162,7 +162,7 @@
     <section id="abstract">
      <p>
      This document provides non-normative guidance on 
-     how to test Web of Things (WoT) for security and privacy.
+     how to test W3C Web of Things (WoT) systems for security and privacy.
      </p>
     </section>
 
@@ -182,6 +182,14 @@
 	<a href="https://www.w3.org/TR/2018/NOTE-wot-security-20181203/">WoT 
         Security and Privacy Considerations</a> document.
       </p>
+      <p>
+        For a general discussion of best practices for developing secure WoT systems, 
+        as well as a set of suggested combinations of authentication mechanisms
+        and secured protocols,
+        see the  
+	<a href="https://github.com/w3c/wot-security-best-practices/">WoT 
+        Security Best Practices</a> document.
+      </p>
       <p>For details on the Web of Things architecture, please refer to the following:
       <ul>
         <li>the <a href="https://www.w3.org/WoT/IG/">Interest Group</a> web site</li>
@@ -196,23 +204,116 @@
             document.</li>
       </ul>
       </p>
-	  <p>{Difference between vulnerability and exploit.}</p>
-	  <p>{Goal of testing is to find vulnerabilities.}</p>
-    <p>{Mention that while we provide some tool examples in below subsections,
-        they are just examples, and people are free to use any tool that fits the purpose.}</p>
+          <p>This document provides guidance on how a WoT system implementation can be
+          tested in order to evaluate its security and privacy.  
+          A companion 
+          <a href="https://github.com/w3c/wot-security-best-practices/">WoT Security Best Practices</a> 
+          document describes best practices for securing WoT implementations.  This document
+          focuses on systems that follow those best practice since systems that do
+          not generally will have known vulnerabilities (and exploits) and testing
+          to reveal them would be redundant.
+          </p>WoT systems can consist both of purpose-built components and pre-existing
+          components.  
+          Purpose-built WoT components should be
+          implemented using WoT security best practices.  
+          However, pre-existing systems may also have WoT Thing Descriptions written 
+          for them so that other WoT components can interface with them.  
+          Such "retrofitted" pre-existing components
+          may also have pre-existing security vulnerabilities.  
+          Security testing may reveal these
+          as well, but it should be understood that describing a network interface
+          using a WoT Thing Description does not guarantee that it will be secure: in order
+          to accomodate pre-existing devices, WoT Thing Descriptions need to be flexible
+          enough to describe both secure <em>and</em> insecure interfaces.
+          </p><p>
+          The goal of WoT security testing is to find security vulnerabilties in
+          the implementation of WoT components.  It is not possible in general to 
+          prove the converse, that a WoT component is secure (that is, that it has no
+          vulnerabilities).  However, thorough security testing can at least ensure
+          that there are no obvious (easily discoverable) vulnerabilities in an implementation.
+          </p><p>
+          Furthermore, the goal of security testing for an implementor is to identify the existence of
+          vulnerabilities, not to exploit them to break into or manipulate a system.
+          For an implementor, the priority after discovery of a vulnerability is to 
+          implement a mitigation to prevent the vulnerability from being exploited,
+          not to actually exploit it.  
+          Not all vulnerabilities are immediately exploitable, however.  
+          Fixing exploitable vulnerabilities should have a higher priority,
+          so an implementor may want to also determine which vulnerabilities are
+          exploitable in order to prioritize mitigations.
+          </p><p>
+          In the following we provide some background on testing, including
+          a description of several varieties of security testing and examples of suitable
+          tools for each.
+          While we provide some tool examples in the following,
+          they are just examples; you are free to use any tool that fits the purpose.
+          After introducing the categories of testing and examples of tools for each,
+          we then present a general security testing plan for WoT systems based on these categories.
+          </p>
     </section>
 
     <section>
       <h1>Best Practices</h1>
-      <p>Really want to identify known bad practices, such as basic auth + http, for which a 
-	 vulnerability is known.
-	    It is known from the TD that the system is vulnerable.</p>
+      <p>Before beginning security testing, it is useful to determine if the components 
+      of the system being tested have been implemented following good and up-to-date security practices.
+      What we really want to do is identify systems that use known insecure practices, 
+      for which a vulnerability is known.  Many times such vulnerabilities will be
+      obvious from the WoT Thing Description, and can be identified with simple tools.
+      </p><p>
+      As an example, suppose a WoT Thing combines "basic" authentication with plain HTTP.
+      In this case the username and password can be easily recovered from the header
+      information of the unencrypted HTTP request by an evesdropper with access to the 
+      network traffic, for example by code running in a compromised router or by someone
+      who has broken WiFi encryption.
+      </p><p>
+      As another example, an older device may use an obsolete form of encryption for which
+      an attack is known.
+      </p><p>
+      Hiding the Thing Descriptions of such systems is not really a solution: security
+      by obscurity is not effective.  However, certainly mitigating obvious vulnerabilities
+      easily discoverable in the Thing Description should be a high priority.
+      Ideally mitigation is accomplished by modifying the implementation but this
+      is not possible in all cases.  If the implementation cannot be modified it may be
+      possible to achieve partial mitigation by securing the network environment, e.g. by
+      using a VPN or encrypted tunnels to encapsulate the vulnerable network traffic.
+      </p><p>
+      Another point to note is that a Thing Description may not describe all the
+      network interfaces of a Thing.  A Thing may have a Thing Description that describes
+      a network interface that follows best practices and may pass all the additional
+      security tests described below on that interface, but may still have an insecure
+      backdoor not described in the Thing Description.  It is the implementor's
+      responsibility to secure all network interfaces, even if the Thing Description is
+      subsetted.  Note that there are valid reasons to subset a Thing Description,
+      for example to provide different interfaces to users with different roles and
+      access rights.
+      </p><p>
+      A WoT system may also have components that do not have Thing Descriptions.
+      There may, for example, be services such as proxies or directories.  These
+      should also be tested.  If they are web services, then much of the testing
+      procedure described below should also apply to them.
+      <p>
     </section>
 	
     <section>
       <h1>Functional Security Testing</h1>
-      <p>{Does the Thing do what the TD says it does in terms of security, and only that?
-	  Checks the security portiont of the TD.}</p>
+      <p>Functional testing checks that a WoT Thing implements the interactions
+      described in its Thing Description.  This includes whether or not it 
+      responds to all URLs given and accepts and returns data as specified 
+      in the data schemas given in the Thing Description for each interaction.
+      </p><p>
+      Functional testing should also check that all security mechanisms 
+      described in the Thing Description are implemented properly.
+      Does the Thing do what the Thing Description says it does in terms of security, 
+      and only that?  
+      Does the Thing Description accurately described the security mechanisms
+      used by the Thing?
+      Do interactions accept authorized accesses, and reject accesses
+      that do not provide correct authentication and authorization information?
+      </p><p>
+      Again, there can be both purpose-built and pre-existing devices described 
+      by a Thing Description.  A Thing Description needs to accurately describe
+      the security behavior and requirements in both cases. 
+      </p>
     </section>
 
     <section>
