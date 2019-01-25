@@ -286,13 +286,34 @@
       subsetted.  Note that there are valid reasons to subset a Thing Description,
       for example to provide different interfaces to users with different roles and
       access rights.
-      </p>
+      </p><p>
+      A WoT system may also have components that do not have Thing Descriptions.
+      There may, for example, be services such as proxies or directories.  These
+      should also be tested.  If they are web services, then much of the testing
+      procedure described below should also apply to them.
+      <p>
     </section>
 	
     <section>
       <h1>Functional Security Testing</h1>
-      <p>{Does the Thing do what the TD says it does in terms of security, and only that?
-	  Checks the security portiont of the TD.}</p>
+      <p>Functional testing checks that a WoT Thing implements the interactions
+      described in its Thing Description.  This includes whether or not it 
+      responds to all URLs given and accepts and returns data as specified 
+      in the data schemas given in the Thing Description for each interaction.
+      </p><p>
+      Functional testing should also check that all security mechanisms 
+      described in the Thing Description are implemented properly.
+      Does the Thing do what the Thing Description says it does in terms of security, 
+      and only that?  
+      Does the Thing Description accurately described the security mechanisms
+      used by the Thing?
+      Do interactions accept authorized accesses, and reject accesses
+      that do not provide correct authentication and authorization information?
+      </p><p>
+      Again, there can be both purpose-built and pre-existing devices described 
+      by a Thing Description.  A Thing Description needs to accurately describe
+      the security behavior and requirements in both cases. 
+      </p>
     </section>
 
     <section>
