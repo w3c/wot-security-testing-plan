@@ -162,7 +162,7 @@
     <section id="abstract">
      <p>
      This document provides non-normative guidance on 
-     how to test Web of Things (WoT) for security and privacy.
+     how to test W3C Web of Things (WoT) systems for security and privacy.
      </p>
     </section>
 
@@ -182,6 +182,11 @@
 	<a href="https://www.w3.org/TR/2018/NOTE-wot-security-20181203/">WoT 
         Security and Privacy Considerations</a> document.
       </p>
+      <p>
+        For a general discussion of best practices for developing secure WoT systems, see the  
+	<a href="https://github.com/w3c/wot-security-best-practices/">WoT 
+        Security Best Practices</a> document.
+      </p>
       <p>For details on the Web of Things architecture, please refer to the following:
       <ul>
         <li>the <a href="https://www.w3.org/WoT/IG/">Interest Group</a> web site</li>
@@ -196,10 +201,46 @@
             document.</li>
       </ul>
       </p>
-	  <p>{Difference between vulnerability and exploit.}</p>
-	  <p>{Goal of testing is to find vulnerabilities.}</p>
-    <p>{Mention that while we provide some tool examples in below subsections,
-        they are just examples, and people are free to use any tool that fits the purpose.}</p>
+          <p>This document provides guidance on how a WoT system implementation can be
+          tested in order to evaluate its security and privacy.  A companion document
+          describes best practices for securing WoT implementations.  This document
+          focuses on systems that follow those best practice since systems that do
+          not generally will have known vulnerabilities (and exploits) and testing
+          to reveal them would be redundant.  In addition it should be noted that 
+          WoT systems can consist both of purpose-built components and pre-existing
+          components for which a WoT Thing Description has been written so that other
+          WoT components can interface with them.  Purpose-built WoT components should be
+          implemented using WoT security best practices.  Retrofitted pre-existing components
+          may also have pre-existing security vulnerabilities.  Testing may reveal these
+          as well, but it should be understood that describing a network interface
+          using a WoT Thing Description does not guarantee a secure interface: in order
+          to accomodate pre-existing devices, WoT Thing Descriptions need to be flexible
+          enough to describe both secure and insecure interfaces.
+          </p><p>
+          The goal of WoT security testing is to find security vulnerabilties in
+          the implementation of WoT components.  It is not possible in general to 
+          prove the converse, that a WoT component is secure (that is, that it has no
+          vulnerabilities).  However, thorough security testing can at least ensure
+          that there are no obvious (easily discoverable) vulnerabilities in an implementation.
+          </p><p>
+          Furthermore, the goal of security testing for an implementor is to identify the existence of
+          vulnerabilities, not to exploit them to break into or manipulate a system.
+          For an implementor, the priority after discovery of a vulnerability is to 
+          implement a mitigation to prevent the vulnerability from being exploited,
+          not to actually exploit it.  
+          Not all vulnerabilities are immediately exploitable, however.  
+          Fixing exploitable vulnerabilities should have a higher priority,
+          so an implementor may want to also determine which vulnerabilities are
+          exploitable in order to prioritize mitigations.
+          </p><p>
+          In the following we provide some background on testing, including
+          a description of several varieties of security testing and examples of suitable
+          tools for each.
+          While we provide some tool examples in the following,
+          they are just examples; you are free to use any tool that fits the purpose.
+          After introducing the categories of testing and examples of tools for each,
+          we then present a general security testing plan for WoT systems based on these categories.
+          </p>
     </section>
 
     <section>
