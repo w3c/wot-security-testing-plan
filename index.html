@@ -218,214 +218,259 @@
     <section>
       <h1>Adversarial Security Testing</h1>
 
-      <p>Adversarial security testing (or pentesting) includes various checks that can be done in order
+      <p>Adversarial security testing (also known as penetration testing or pentesting) 
+      includes various checks that can be done in order
       to find vulnerabilities in the target device or service and determine their
       severity and exploitability.
-      On a high level any penetration testing consists of three stages:
-      <ul>
-          <li><strong>Information gathering</strong>, where required information is collected about the attack target
-          <li><strong>Vulnerability discovering</strong>, where an attack target is analyzed and applicable
-          vulnerabilities found, and finally
-          <li><strong>Exploitation attempt</strong>, where the found vulnerabilities
-          are attempted to be exploited to achieve of the desired outcome, such as privilege
-          escalation, authorization bypass, denial of service and others.
-      </ul>
-      In turn, the stage two can be done in one (or combination) of the following activities:
-      static vulnerability discovery and runtime vulnerability discovery.</p>
-
+      On a high level adversarial testing consists of three stages, which
+      are often applied iteratively:
+      <ol>
+          <li><strong>Information gathering:</strong> 
+          Required information is collected about the attack target.
+          <li><strong>Vulnerability discovery:</strong>
+          An attack target is analyzed and applicable vulnerabilities are found.
+          <li><strong>Exploitation attempt:</strong> 
+          Vulnerabilities found are attempted to be exploited to achieve a desired outcome, 
+          such as privilege escalation, authorization bypass, denial of service and other goals.
+      </ol>
       <p>Many resources and tools exist to help penetration and security testers to
-      perform the above activities, as well as many documents and tutorials written
-      to help guiding this activity. One example of such guide is the "Web Service
+      perform the above activities.  Many documents and tutorials have also been written
+      to help guide this activity. One example of such guide is the "Web Service
       Security Testing Cheat Sheet" [[Owa18]] written by the Open Web Application
-      Security Project.</p>
-
+      Security Project (OWASP).  Generally speaking, WoT components can be treated
+      as web services for the purposes of security testing, especially if they use HTTP.  
+      However, WoT components also
+      have some additional considerations, 
+      for example local access while using HTTPS, or
+      use of non-HTTP protocols such as CoAP or MQTT.
+      </p><p>
+      For the purposes of WoT security testing we will focus on Stage 2,
+      <em>Vulnerability Discovery</em>.  
+      Vulnerability discovery can be broken down into a combination of
+      static vulnerability discovery and runtime vulnerability discovery.
+      </p><p>
+      Stage 1 is not really necessary in the case of white-box
+      testing, which we will assume (given that, for example, a Thing Description already
+      documents much of the information needed).  Generally speaking, trying to achieve
+      security through obscurity is not feasible, so for testing we should assume the
+      attacker knows as much about the system as the implementor.
+      Also, since our goal is to test the 
+      security of the components of a WoT system, not actually break into it,
+      we also will not focus on Stage 3.  
+      However, an exploitable vulnerability has a higher priority for correction 
+      than one for which no exploit is (yet) known, so this information
+      is still useful to prioritize mitigation.
+      </p>
+      
     <section id="static-vulnerability-discovery">
     <h2>Static Vulnerability Discovery</h2>
-
-      <p>This activity typically requires an access to the target's source code,
-      and therefore is not always possible to perform for a penetration tester.
+      <p>Static vulnerability discovery typically requires an access to the target's source code,
+      and therefore is not always possible to perform for a black-box penetration tester.
       However, since a WoT Thing developer or WoT Service provider have the access,
       they are strongly encouraged to use the below methods to check potential
-      vulnerabilities in their components. Static vulnerability discovery is very common
-      and well automated with many existing tools, so after an initial setup phase,
-      it should provide little overhead to the WoT component development and release process.
+      vulnerabilities in their components as part of white-box testing. 
+      Static vulnerability discovery is very supported and automated.
+      Many tools are available, so after an initial setup phase,
+      it should add little overhead to the WoT component development and release process.
       </p>
 
       <section id="static-code-analysis">
       <h3>Static Code Analysis</h3>
-
       <p>The most common example of static vulnerability discovery is usage of a
-      static code analyzer tool that is able to parse the programming code and
-      highlight potential development mistakes, such usage of insecure function or types,
-      forgotten boundary checking when operating on arrays and many others.
-      Usually the output of this tool is a result of a code scan in a form of a report that
-      needs to be manually triaged to determine if each reported case is a false positive
-      or a real mistake. While static development tools are constantly improving and able
-      to offer better coverage, lower false positive rating and discover more potentially
-      vulnerable places, it is important to remember that these tools (as any others) do
-      not guarantee finding all vulnerable places in the scanned component, so other methods
-      should be used to complement it.</p>
+      static code analyzer tool that is able to parse a program's code and
+      highlight potential development mistakes and insecure practices, 
+      such usage of insecure functions or libraries,
+      forgotten boundary checks when operating on arrays, and many others.
+      Usually the output of such a tool is in the form of a report that
+      needs to be manually triaged to determine if each reported issue is a false positive
+      or a real mistake. While static development tools are constantly improving and 
+      over time are able
+      to offer better and better coverage, lower false positive rates, 
+      and discover more potentially vulnerable sites, 
+      it is important to remember that these tools (as any others) do
+      not guarantee finding all vulnerable sites in the scanned component.
+      Other methods should be used to complement static analysis.</p>
 
-	    <p><strong>Examples of tools</strong>:
-      Many commercial and open source tools exist that primary differ on the
-      source code language that they can process as input. The major suggestion
+      <p><strong>Examples of tools:</strong>
+      Many commercial and open source tools exist that primarily differ on the
+      source code languages that they can process as input. Our major suggestion
       would be to choose a well-established, mature tool that is actively
       supported and developed. Some examples include Klocwork [[Klocwork]],
-      Coverity [[Coverity]], Checkmarx [[Checkmarx]], etc.
+      Coverity [[Coverity]], and Checkmarx [[Checkmarx]].
       Also, while some of these tools are commercial and require a license
-      to use, they do provide a free scanning service for open source projects.
-      One example of such service is an online Coverity service [[CoverityOnline]]
+      to use, they often do provide a free scanning service for open source projects.
+      One example of such service is the online Coverity service [[CoverityOnline]].
       </p>
       </section>
 
       <section id="known-vulnerability-checking">
-	    <h3>Known vulnerability checking</h3>
-
-      <p>In addition to checking for development mistakes in produced program code,
-      it is important to check that the resulting component does not include
-      vulnerable 3rd party libraries or utilities. There are many tools developed
-      for this purpose and on a high-level they work by scanning executable binary
+      <h3>Known vulnerability checking</h3>
+      <p>In addition to checking for development mistakes in new code,
+      it is also important to check that programs do not include
+      vulnerable third-party libraries or utilities. There are many tools developed
+      for this purpose and on a high level they work by scanning executable binary
       (or source code for non-compiled languages) or application package in a search
       of vulnerable components, such as old versions of libraries that are vulnerable
       to known attacks. The information about vulnerabilities usually comes from
-      the open NIST database and usually updated regularly (daily or more often), since
+      the open NIST database and must usually updated regularly (daily or more often), since
       new vulnerabilities are reported all the time.
+      This also implies that the analysis should be repeated as new vulnerabilities 
+      and exploits are found, and if necessary, components updated to mitigate any
+      new vulnerabilities.
       </p>
 
-      <p><strong>Examples of tools</strong>:
-      Same as with static code analyzer software, the major suggestion
+      <p><strong>Examples of tools:</strong>
+      Just as with static code analyzer software, our major suggestion
       would be to choose a well-established, mature tool that is actively
-      supported and developed. Some examples include Protecode[[Protecode]],
-      Dependency-check [[OWASP-Dependency-Check]], Snyk [[Snyk]], etc.
-      etc.
+      supported and developed. Some examples include Protecode [[Protecode]],
+      Dependency-check [[OWASP-Dependency-Check]], and Snyk [[Snyk]].
       </p>
       </section>
     </section>
 
 
     <section id="runtime-vulnerability-discovery">
-	  <h2>Runtime (Dynamic) Vulnerability Discovery</h2>
-
-      <p>In contrast to the Static Vulnerability Discovery, the runtime
+      <h2>Runtime (Dynamic) Vulnerability Discovery</h2>
+      <p>In contrast to static vulnerability discovery, runtime
       vulnerability discovery does not require access to the source code or
-      compiled binaries of a component, but merely an ability to access
+      compiled binaries of a component, but merely an ability to access a
       component's exposed interfaces (especially network-facing interfaces)
-      or an ability to observe and modify the protocol communication.
-      The goal of such discovery is to find an interface input or protocol
-      modification, that leads to unintended behavior, such as component
-      deadlock, crash, etc.
-      Similarly as for static vulnerability discovery, many tools exists to
-      help with this task, however, it is generally a bit harder to reach full
+      and/or an ability to observe and modify the protocol and communication with
+      other components.
+      </p><p>
+      The goal of runtime vulnerability discovery is to find an interface input 
+      or protocol modification that leads to unintended behavior, such as component
+      deadlock or crash.  Even if a crash is not the desired outcome for an attacker,
+      for example, a crash is also an indication of some other problem, such as a 
+      lack of input validation, that can be used in more sophisticated exploits.
+      </p><p>
+      Just as with static vulnerability discovery, many tools exist to
+      help with this task.  For web services, it is generally a bit harder to reach full
       automation (with exception of fuzz testing) here, and the best results
-      can be archive by combining both manual and automated tasks.
+      can usually only be achieved by combining both manual and automated tasks.
+      However, the advent of API metadata such as OpenAPI and the WoT Thing Description
+      may in the future lead to more sophisticated and automated tooling in this
+      area.
       </p>
 
       <section id="fuzz-testing">
-	    <h3>Fuzz Testing</h3>
-
-      <p>Fuzz testing is one of the most known and used runtime vulnerability
-      discovery methods. It is well-automated, many tools exists for common
-      protocols and payloads, and it is a very powerful method for vulnerability
+      <h3>Fuzz Testing</h3>
+      <p>Fuzz testing is one of the most well known and used runtime vulnerability
+      discovery methods. It is well-automated, many tools exist for common
+      protocols and payloads.  It is a very powerful method for vulnerability
       discovery.
       Fuzz testing works by generating (randomly or pattern-based) highly
-      varied input for a certain network exposed interface or protocol payload,
-      sending this input to the tested component and observing the result.
+      varied input for a specific network exposed interface or protocol payload,
+      sending this input to the tested component, and observing the result.
       If a desired outcome happens (such as tested component crashes), the
       corresponding input and details of the crash are recorded for the
       analyst to manually process.</p>
 
-      <p>The biggest challenge with the fuzz testing is usually to be able to
-      generate the fuzzed input in a correct form that it does not get
-      discarded by the lower layers of software or network stack. For example,
-      if the fuzz testing goal is to test how a WoT Thing instance processes
+      <p>The biggest challenge with fuzz testing is usually to be able to
+      generate the randomized input in a form that is still "correct enough"
+      that it does not get discarded by the lower layers of software or network stack. 
+      For example, if the fuzz testing goal is to test how a WoT Thing instance processes
       numeric values on its temperature setting HTTP-exposed interface,
       it is important that fuzzed requests have valid HTTP headers, body
       structure, etc. This way the requests will get delivered all the way
-      to the WoT Thing instance and not discarded by HTTP message validation
-      and processing components.</p>
+      to the WoT Thing instance and will not discarded by HTTP message validation
+      and processing components.
+      </p>
 
-	    <p><strong>Examples of tools</strong>: There are numerous tools exists for fuzzing
-      HTTP(S)-exposed interfaces, such as Burp Suite[[Burp]], Wfuzz[[Wfuzz]],
-      Wapiti [[wapiti]] and others.
-      Newer protocols, like COAP(S), have considerably less tools
-      available, such as fuzzcoap [[FuzzCoAP]] or CoAP Peach Pit (from Peach Fuzzer)
-      [[PeachPit-COAP]], and some of them can be still in the experimental phase.</p>
+      <p><strong>Examples of tools:</strong>
+      There are numerous tools exists for fuzzing
+      HTTP(S)-exposed interfaces. 
+      Examples include Burp Suite [[Burp]], Wfuzz [[Wfuzz]], and Wapiti [[wapiti]].
+      Newer protocols, like COAP(S) and MQTT(S), have considerably fewer tools
+      available.  However some do exist.
+      Examples for CoAP(S) include fuzzcoap [[FuzzCoAP]] and CoAP Peach Pit (from Peach Fuzzer)
+      [[PeachPit-COAP]].  Some of these may still in the experimental phase.</p>
       </section>
 
       <section id="protocol-analysis">
-	    <h3>Protocol Analysis</h3>
+      <h3>Protocol Analysis</h3>
+      <p>In addition to automated Fuzz testing, one might be able to discover
+      vulnerabilities by manually analyzing protocol elements such as
+      headers, payload, and attributes. 
+      For example, an analyst might look for the use of older encryption 
+      or authentication algorithms, or the use of insecure combinations of protocol options.
+      While the actual protocol analysis is a manual process, 
+      many tools exist to capture the protocol traffic, parse it
+      according to the protocol, and present it to the analyst in an organized fashion.
 
-      In addition to the automated Fuzz testing, one might be able to discover
-      vulnerabilities by manually analyzing the protocol elements, such as
-      headers, payload, attributes and others. While the actual analysis happens
-      manually, many tools exist to capture the protocol traffic, parse it
-      according to the protocol and present to the analyst in an organized fashion.
-
-      <p><strong>Examples of tools</strong>: Classical examples of network protocol
-      analyzers are Wireshark [[Wireshark]], tcpdump [[tcpdump]] and others. </p>
+      <p><strong>Examples of tools:</strong> Examples of network protocol
+      analyzers include Wireshark [[Wireshark]] and tcpdump [[tcpdump]]. </p>
       </section>
 
       <section id="vulnerability-scanners">
-	    <h3>Vulnerability scanners</h3>
-	    <p>There are many tools available that attempt to perform a runtime
+      <h3>Vulnerability Scanners</h3>
+      <p>There are many tools available that attempt to perform runtime
       testing for known vulnerabilities. They usually operate
-      by attempting to run a known set of exploits against the target and report
-      the outcome. Such tools should be used in addition to the fuzz testing tools
-      in order to get a more complete runtime vulnerability discovery.
-	    </p>
+      by attempting to run a known set of exploits or vulnerability trigger inputs
+      against the target and report the outcomes. 
+      Such tools should be used in combination with other testing tools
+      in order to obtain a more complete runtime vulnerability discovery result.
+      </p>
 
-      <p><strong>Examples of tools</strong>: While many different vulnerability
+      <p><strong>Examples of tools:</strong> While many different vulnerability
       scanners exist, some specifically target web applications and web server
-      service vulnerabilities and therefore more focused. For example w3af [[w3af]],
-      Burp vulnerability scanner [[Burp]], Nikto [[Nikto]], WATOBO [[WATOBO]]
-      and others. </p>
+      service vulnerabilities and are therefore more focused. 
+      Examples include w3af [[w3af]],
+      the Burp vulnerability scanner [[Burp]], Nikto [[Nikto]], and WATOBO [[WATOBO]].
+      </p>
       </section>
       </section>
 
       <section id="exploitation">
-	    <h2>Exploitation</h2>
-
+      <h2>Exploitation</h2>
         <p>When a vulnerability or a set of vulnerabilities is found for a component,
-        it is important to estimate its exploitation risk level, i.e. if a particular
-        vulnerability can be used by an attacker to achieve one of the attack end goals,
-        such as privilege escalation, authorization bypass, denial of service and others.
-        This step can help to prioritize the order in which vulnerabilities must be fixed,
-        by fixing the exploitable vulnerabilities first and then continuing with others.
-        Some tools mentioned in section <a href="#protocol-analysis"></a> allows to test
-        exploitation of a particular known vulnerability. Additionally, for known
+        it is important to estimate the exploitation risk level for those
+        vulnerabilties.  Exploitation risk level aims to determine if a particular
+        vulnerability can be used by an attacker to achieve particular attack end goals,
+        such as privilege escalation, authorization bypass, denial of service and so on.
+        This step can help to prioritize the order in which vulnerabilities must be fixed.
+        Developers should fix the most easily exploitable vulnerabilities first and 
+        then continuing with others in decreasing level of severity.
+        Some tools mentioned in section <a href="#protocol-analysis"></a> can be used to test
+        the exploitabilty of a particular known vulnerability. Additionally, for known
         vulnerabilities, the Exploit-DB [[exploit-db]] database hosts many public exploits
-        and allows to search by the CVE number of the vulnerability.
+        and allows to search by the CVE number of the associated (known) vulnerability.
         However, it is important to remember that it is generally very hard to reliably
-        determine exploitability of a given vulnerability: if an exploit cannot be
+        determine the exploitability of a given vulnerability: if an exploit cannot be
         found, it does not guarantee that vulnerability is not exploitable. Moreover,
-        for some vulnerabilities, they might not be exploitable on their own, but play
+        for some vulnerabilities, they might not be exploitable on their own, but may still play
         an important role in the attacker exploitation chain as a stepping stone towards
-        the end exploitation goal. Therefore, it is strongly encouraged to fix all found
-        vulnerabilities in the analyzed component.</p>
+        the end exploitation goal. Therefore, it is strongly encouraged to fix all 
+        vulnerabilities discovered in analyzed components.</p>
     </section>
     </section>
 		    
     <section>
-	    <h1>Suggested Testing Frequency</h1>
-        <p> The actual detailed test procedure depends on the type of activity, the WoT
+    <h1>Suggested Testing Frequency</h1>
+        <p>The actual detailed test procedure depends on the type of activity, the WoT
         device setup and the actual test tool used. Below are our recommendations
-        for the testing frequency for different testing activities. </p>
-        <p>Static Vulnerability Discovery, such as <a href="#static-code-analysis"></a>
+        for the frequency of different testing activities:</p>
+        <ul>
+        <li><p><a href="#static-vulnerability-discovery">Static Vulnerability Discovery</a>, 
+        such as <a href="#static-code-analysis"></a>
         and <a href="#known-vulnerability-checking"></a>, should be done regularly,
         ideally integrated into the development work flow for a WoT component.
-        This is important, since any even small code change can introduce
-        development mistakes, or alternatively new vulnerabilities in the used
-        components appear daily.
-        </p>
-        <p>Runtime Vulnerability Discovery, such as <a href="#fuzz-testing"></a>
+        This is important, since any even small code changes can introduce
+        development mistakes, or alternatively new vulnerabilities can be 
+        discovered in the libraries that a program depends on.  New vulnerabilities
+        are discovered in existing libraries almost daily.
+        </p></li>
+        <li><p><a href="#runtime-vulnerability-discovery">Runtime Vulnerability Discovery</a>, 
+        such as <a href="#fuzz-testing"></a>
         <a href="#protocol-analysis"></a> and <a href="#vulnerability-scanners"></a>
         should be also done on a regular basis, for example for each major release
         or development milestone.
-        </p>
-        <p>Finally, <a href="#exploitation"></a> should be done once in a while,
+        </p></li>
+        <li><p><a href="#exploitation">Exploitation Analysis</a> should be done occasionally,
         whenever possible, since it is the most time and resource consuming
-        activity that often requires external resources with specialized knowledge.
-        </p>
+        activity and often requires external resources with specialized knowledge.
+        </p></li>
+        </ul>
     </section>
 
     <section>
