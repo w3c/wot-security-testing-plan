@@ -6,7 +6,7 @@ authoritative source.
 
 * [WoT Security Testing Plan](index.html): A set of suggestions on 
 how security and privacy aspects of WoT systems can be tested.
-* [Rendered Version](https://cdn.staticaly.com/gh/w3c/wot-security-testing-plan/3b2776fd/index.html)
+* [Rendered Version](https://cdn.staticaly.com/gh/w3c/wot-security-testing-plan/master/index.html)
 
 If you wish to make a contribution,
 please be aware that since the master is being linked from other WoT documents
