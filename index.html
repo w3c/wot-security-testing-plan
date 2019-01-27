@@ -409,14 +409,16 @@
       <p>In addition to checking for development mistakes in new code,
       it is also important to check that programs do not include
       vulnerable third-party libraries or utilities. There are many tools developed
-      for this purpose and on a high level they work by scanning executable binary
-      (or source code for non-compiled languages) or application package in a search
-      of vulnerable components, such as old versions of libraries that are vulnerable
+      for this purpose and on a high level they work by scanning executable binaries
+      (or source code for non-compiled languages) or application packages in a search
+      for vulnerable components, such as old versions of libraries that are vulnerable
       to known attacks. The information about vulnerabilities usually comes from
-      the open NIST database and must usually updated regularly (daily or more often), since
-      new vulnerabilities are reported all the time.
-      This also implies that the analysis should be repeated as new vulnerabilities 
-      and exploits are found, and if necessary, components updated to mitigate any
+      the open NIST database which is updated regularly since
+      new vulnerabilities are reported all the time.  
+      This also implies that the analysis should be repeated regularly, ideally
+      daily and as part of an automated build process, using the latest version
+      of the vulnerability database.  As new vulnerabilities 
+      and exploits are found, components may then have to be updated to mitigate any
       new vulnerabilities.
       </p>
 
